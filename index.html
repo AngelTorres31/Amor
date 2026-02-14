@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allan y Angie</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="Imagenes/corazon.webp">
+    
+    <style>
+       @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@400;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #0a0a0a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Efecto de ciudad cyberpunk de fondo */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(255, 0, 127, 0.05) 0px,
+                    transparent 1px,
+                    transparent 2px,
+                    rgba(255, 0, 127, 0.05) 3px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(0, 255, 255, 0.05) 0px,
+                    transparent 1px,
+                    transparent 2px,
+                    rgba(0, 255, 255, 0.05) 3px
+                );
+            animation: glitch 8s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes glitch {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Partículas flotantes */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #ff0080;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ff0080;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            text-align: center;
+            padding: 30px 30px;
+            background: rgba(10, 10, 30, 0.9);
+            border-radius: 30px;
+            box-shadow: 
+                0 0 60px rgba(255, 0, 127, 0.4),
+                0 0 100px rgba(0, 255, 255, 0.2),
+                inset 0 0 50px rgba(255, 0, 127, 0.1);
+            max-width: 600px;
+            width: 90%;
+            border: 2px solid rgba(255, 0, 127, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff0080, #00ffff, #ff0080);
+            border-radius: 30px;
+            z-index: -1;
+            opacity: 0.3;
+            filter: blur(10px);
+        }
+
+        h1 {
+            font-family: 'Bangers', cursive;
+            color: #ffffff;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            text-shadow: 
+                0 0 20px #ff0080,
+                0 0 40px #ff0080,
+                2px 2px 0 #000,
+                -2px -2px 0 #000;
+            animation: neon-flicker 3s infinite alternate;
+            letter-spacing: 2px;
+        }
+
+        @keyframes neon-flicker {
+            0%, 100% {
+                text-shadow: 
+                    0 0 20px #ff0080,
+                    0 0 40px #ff0080,
+                    2px 2px 0 #000,
+                    -2px -2px 0 #000;
+            }
+            50% {
+                text-shadow: 
+                    0 0 30px #ff0080,
+                    0 0 60px #ff0080,
+                    0 0 80px #ff0080,
+                    2px 2px 0 #000,
+                    -2px -2px 0 #000;
+            }
+        }
+
+        .subtitle {
+            color: #00ffff;
+            font-size: 1em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #00ffff;
+            font-style: italic;
+            font-weight: 300;
+            line-height: 1.5;
+        }
+
+        /* Botón de control de música */
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 0, 127, 0.8);
+            border: 2px solid #ff0080;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .music-control:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 0, 127, 0.8);
+        }
+
+        .music-control::before {
+            content: '🔊';
+            font-size: 24px;
+        }
+
+        .music-control.muted::before {
+            content: '🔇';
+        }
+
+        /* Estilos para la imagen */
+        .image-container {
+            margin: 20px 0;
+            position: relative;
+            border-radius: 20px;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 127, 0.6),
+                0 0 60px rgba(0, 255, 255, 0.3);
+            border: 3px solid rgba(255, 0, 127, 0.5);
+            overflow: hidden;
+            max-width: 100%;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            display: block;
+            border-radius: 17px;
+            object-fit: contain;
+        }
+
+        .image-container video {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            display: block;
+            border-radius: 17px;
+            object-fit: contain;
+        }
+
+        /* Sección de contenido */
+        .seccion {
+            display: none;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .seccion.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateX(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+
+        /* Navegación */
+        .navegacion {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            gap: 15px;
+        }
+
+        .nav-button {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            font-weight: 900;
+            border: 3px solid;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: #0a0a2e;
+            color: #00ffff;
+            border-color: #00ffff;
+            box-shadow: 
+                0 0 20px #00ffff,
+                0 5px 15px rgba(0, 255, 255, 0.4);
+        }
+
+        .nav-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 0 30px #00ffff,
+                0 8px 20px rgba(0, 255, 255, 0.6);
+        }
+
+        .nav-button:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Indicador de progreso */
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(0, 255, 255, 0.3);
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: #ff0080;
+            border-color: #ff0080;
+            box-shadow: 0 0 15px #ff0080;
+            transform: scale(1.3);
+        }
+
+        .web {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, transparent 0%, transparent 1%, rgba(255, 0, 127, 0.03) 1%, transparent 2%),
+                radial-gradient(circle at 80% 70%, transparent 0%, transparent 1%, rgba(0, 255, 255, 0.03) 1%, transparent 2%);
+            pointer-events: none;
+        }
+
+        /* ESTILOS PARA SECCIÓN DE CRÉDITOS */
+        .seccion-creditos {
+            background: #000000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            overflow-y: auto;
+        }
+
+        .seccion-creditos.active {
+            display: flex;
+        }
+
+        .logo-final {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 40px;
+            animation: fadeInLogo 2s ease-in-out;
+            border-radius: 20px;
+            object-fit: contain;
+        }
+
+        @keyframes fadeInLogo {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .creditos-container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .credito-item {
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeInCredit 1.5s ease-in-out forwards;
+        }
+
+        .credito-item:nth-child(1) { animation-delay: 0.5s; }
+        .credito-item:nth-child(2) { animation-delay: 1s; }
+        .credito-item:nth-child(3) { animation-delay: 1.5s; }
+        .credito-item:nth-child(4) { animation-delay: 2s; }
+        .credito-item:nth-child(5) { animation-delay: 2.5s; }
+        .credito-item:nth-child(6) { animation-delay: 3s; }
+
+        @keyframes fadeInCredit {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .credito-titulo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9em;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 5px;
+            font-weight: 400;
+        }
+
+        .credito-nombre {
+            font-family: 'Bangers', cursive;
+            font-size: 1.8em;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .mensaje-final {
+            margin-top: 50px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2em;
+            color: #ff0080;
+            font-style: italic;
+            text-shadow: 0 0 20px rgba(255, 0, 127, 0.6);
+            opacity: 0;
+            animation: fadeInCredit 2s ease-in-out forwards;
+            animation-delay: 3.5s;
+        }
+
+        .btn-volver {
+            margin-top: 40px;
+            padding: 12px 35px;
+            font-size: 1em;
+            font-weight: 900;
+            border: 3px solid #ff0080;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: transparent;
+            color: #ff0080;
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeInCredit 2s ease-in-out forwards;
+            animation-delay: 4s;
+        }
+
+        .btn-volver:hover {
+            background: #ff0080;
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 0, 127, 0.8);
+        }
+
+        /* Responsive para móviles */
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px 20px;
+                width: 95%;
+            }
+
+            h1 {
+                font-size: 1.6em;
+                line-height: 1.2;
+            }
+            
+            .subtitle {
+                font-size: 0.9em;
+                margin-bottom: 15px;
+            }
+            
+            .image-container {
+                margin: 15px 0;
+            }
+
+            .image-container img {
+                max-height: 300px;
+                object-fit: contain;
+            }
+
+            .image-container video {
+                max-height: 300px;
+                object-fit: contain;
+            }
+
+            .nav-button {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+
+            .progress-dot {
+                width: 10px;
+                height: 10px;
+            }
+
+            .music-control {
+                bottom: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+            }
+
+            .logo-final {
+                width: 150px;
+                height: 150px;
+                margin-bottom: 30px;
+            }
+
+            .credito-nombre {
+                font-size: 1.4em;
+            }
+
+            .credito-titulo {
+                font-size: 0.8em;
+            }
+
+            .mensaje-final {
+                font-size: 1em;
+                margin-top: 30px;
+            }
+
+            .btn-volver {
+                padding: 10px 25px;
+                font-size: 0.9em;
+            }
+        }
+
+        /* Responsive para tablets */
+        @media (min-width: 601px) and (max-width: 900px) {
+            .container {
+                max-width: 550px;
+                padding: 35px 30px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .subtitle {
+                font-size: 0.95em;
+            }
+
+            .image-container video {
+                max-height: 350px;
+                object-fit: contain;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="web"></div>
+    
+    <!-- BOTÓN DE CONTROL DE MÚSICA -->
+    <div class="music-control" id="music-control"></div>
+    
+    <div class="container">
+        <!-- MÚSICA DE FONDO -->
+        <audio id="musica-fondo" loop>
+            <source src="Musica/Marc Anthony - Flor Pálida (Audio).mp3" type="audio/mpeg">
+            Tu navegador no soporta el elemento de audio.
+        </audio>
+
+        <!-- SECCIÓN 1 -->
+        <div class="seccion active" data-seccion="1">
+            <h1>Feliz San Valentín ❤️</h1>
+            <p class="subtitle">Primer 14 de febrero juntos</p>
+            
+            <div class="image-container">
+                <img src="Imagenes/imagen 1.jpeg" alt="Imagen 1">
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2 -->
+        <div class="seccion" data-seccion="2">
+            <h1>En cualquier universo 💫</h1>
+            <p class="subtitle">volvería a buscarte</p>
+            
+            <div class="image-container">
+                <img src="Imagenes/imagen 2.jpeg" alt="Imagen 2">
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3 -->
+        <div class="seccion" data-seccion="3">
+            <h1>No te elegí por casualidad.</h1>
+            <p class="subtitle">Te elegí porque mi corazón quiso.</p>
+            
+             <div class="image-container">
+                <video autoplay loop muted playsinline>
+                    <source src="Videos/video 2.mp4" type="video/mp4">
+                    Tu navegador no soporta el elemento de video.
+                </video>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 4 -->
+        <div class="seccion" data-seccion="4">
+            <h1>Eres mi presente favorito ✨</h1>
+            <p class="subtitle">y el futuro que quiero construir.</p>
+            
+            <div class="image-container">
+                <img src="Imagenes/imagen7.jpeg" alt="Imagen 4">
+            </div>
+        </div>
+
+        <!-- SECCIÓN 5 -->
+        <div class="seccion" data-seccion="5">
+            <h1>Próximo capítulo…</h1>
+            
+              <div class="image-container">
+                <video autoplay loop muted playsinline>
+                    <source src="Videos/video 1.mp4" type="video/mp4">
+                    Tu navegador no soporta el elemento de video.
+                </video>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 6 -->
+        <div class="seccion" data-seccion="6">
+            <h1>Por que hay preguntas que no se hacen por mensaje…</h1>
+            <p class="subtitle">se hacen mirándote a los ojos.</p>
+            
+            <div class="image-container">
+                <img src="Imagenes/imagen 6.jpeg" alt="Imagen 6">
+            </div>
+        </div>
+
+        <!-- NAVEGACIÓN -->
+        <div class="navegacion">
+            <button class="nav-button" id="btn-anterior">← Anterior</button>
+            <button class="nav-button" id="btn-siguiente">Siguiente →</button>
+        </div>
+
+        <!-- INDICADOR DE PROGRESO -->
+        <div class="progress-indicator" id="progress-indicator">
+            <div class="progress-dot active"></div>
+            <div class="progress-dot"></div>
+            <div class="progress-dot"></div>
+            <div class="progress-dot"></div>
+            <div class="progress-dot"></div>
+            <div class="progress-dot"></div>
+            <div class="progress-dot"></div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN 7: CRÉDITOS FINALES -->
+    <div class="seccion-creditos" id="seccion-creditos">
+        <img src="Imagenes/logo.webp" alt="Logo" class="logo-final">
+        
+        <div class="creditos-container">
+            <div class="credito-item">
+                <div class="credito-titulo">Protagonistas</div>
+                <div class="credito-nombre">Solo tú y yo.</div>
+            </div>
+
+            <div class="credito-item">
+                <div class="credito-titulo">Dirección</div>
+                <div class="credito-nombre">El Destino</div>
+            </div>
+
+            <div class="credito-item">
+                <div class="credito-titulo">Guión</div>
+                <div class="credito-nombre">Nuestros Corazones</div>
+            </div>
+
+            <div class="credito-item">
+                <div class="credito-titulo">21 • 02 • 2026 • 6:00 PM</div>
+            </div>
+
+            <div class="credito-item">
+                <div class="credito-titulo">Producción</div>
+                <div class="credito-nombre">El Amor</div>
+            </div>
+
+            <div class="mensaje-final">
+                "Esta historia continuará... para siempre"
+            </div>
+
+            <button class="btn-volver" id="btn-volver">← Volver al inicio</button>
+        </div>
+    </div>
+
+    <script>
+        const btnAnterior = document.getElementById('btn-anterior');
+        const btnSiguiente = document.getElementById('btn-siguiente');
+        const musicaFondo = document.getElementById('musica-fondo');
+        const musicControl = document.getElementById('music-control');
+        const secciones = document.querySelectorAll('.seccion');
+        const progressDots = document.querySelectorAll('.progress-dot');
+        const seccionCreditos = document.getElementById('seccion-creditos');
+        const btnVolver = document.getElementById('btn-volver');
+        const container = document.querySelector('.container');
+        
+        let seccionActual = 1;
+        const totalSecciones = 7;
+        let musicPlaying = false;
+
+        musicaFondo.volume = 0.5;
+
+        // Función para iniciar la música
+        function startMusic() {
+            if (!musicPlaying) {
+                musicaFondo.play().then(() => {
+                    musicPlaying = true;
+                    musicControl.classList.remove('muted');
+                }).catch(err => {
+                    console.log('No se pudo reproducir automáticamente:', err);
+                });
+            }
+        }
+
+        // Control de música (activar/desactivar)
+        musicControl.addEventListener('click', function() {
+            if (musicaFondo.paused) {
+                musicaFondo.play();
+                musicPlaying = true;
+                musicControl.classList.remove('muted');
+            } else {
+                musicaFondo.pause();
+                musicPlaying = false;
+                musicControl.classList.add('muted');
+            }
+        });
+
+        // Intentar reproducir música al hacer click en cualquier parte
+        document.addEventListener('click', function() {
+            startMusic();
+        }, { once: true });
+
+        // Función para actualizar la vista
+        function actualizarSeccion() {
+            // Si llegamos a la sección 7, mostrar créditos
+            if (seccionActual === 7) {
+                container.style.display = 'none';
+                seccionCreditos.classList.add('active');
+                return;
+            } else {
+                container.style.display = 'block';
+                seccionCreditos.classList.remove('active');
+            }
+
+            // Ocultar todas las secciones
+            secciones.forEach(seccion => {
+                seccion.classList.remove('active');
+            });
+
+            // Mostrar sección actual
+            const seccionMostrar = document.querySelector(`[data-seccion="${seccionActual}"]`);
+            if (seccionMostrar) {
+                seccionMostrar.classList.add('active');
+            }
+
+            // Actualizar indicadores de progreso
+            progressDots.forEach((dot, index) => {
+                if (index + 1 === seccionActual) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+
+            // Deshabilitar/habilitar botones según la sección
+            btnAnterior.disabled = seccionActual === 1;
+            btnSiguiente.disabled = seccionActual === totalSecciones;
+        }
+
+        // Botón Siguiente
+        btnSiguiente.addEventListener('click', function() {
+            if (seccionActual < totalSecciones) {
+                seccionActual++;
+                actualizarSeccion();
+            }
+        });
+
+        // Botón Anterior
+        btnAnterior.addEventListener('click', function() {
+            if (seccionActual > 1) {
+                seccionActual--;
+                actualizarSeccion();
+            }
+        });
+
+        // Botón Volver desde créditos
+        btnVolver.addEventListener('click', function() {
+            seccionActual = 1;
+            actualizarSeccion();
+        });
+
+        // Crear partículas de fondo
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const isMobile = window.innerWidth <= 600;
+            const particleCount = isMobile ? 25 : 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                if (Math.random() > 0.5) {
+                    particle.style.background = '#00ffff';
+                    particle.style.boxShadow = '0 0 10px #00ffff';
+                }
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Inicializar la primera vista
+        actualizarSeccion();
+
+        // Navegación con teclado (opcional)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' && seccionActual < totalSecciones) {
+                seccionActual++;
+                actualizarSeccion();
+            } else if (e.key === 'ArrowLeft' && seccionActual > 1) {
+                seccionActual--;
+                actualizarSeccion();
+            }
+        });
+    </script>
+</body>
+</html>
